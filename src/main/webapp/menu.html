@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>可折叠的自动伸缩菜单</title>
+    <script src="js/sdmenu.js" type="text/javascript"></script>
+    <link rel="shortcut icon" href="/hello.ico" type="image/x-icon">
+    <link href="css/menu.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+您的位置：<a href="index.jsp">首页</a><span style="font-size: smaller; color: gray"> &gt; </span><a href="#">特效</a>
+<hr/>
+<div align="le">
+    <div id="my_menu" class="sdmenu">
+        <div>
+            <span>菜单一号</span>
+            <a href="datepicker.html">DatePicker</a>
+            <a href="horizontal_slideout_menu.html">HorizontalSlideOutMenu</a>
+            <a href="lottery_scratch.html">刮刮乐</a>
+            <a href="bigwheeldraw.html">大转盘抽奖</a>
+        </div>
+        <div>
+            <span>菜单二号</span>
+            <a href="#">源码</a>
+            <a href="#">电子书</a>
+            <a href="#">酷站</a>
+        </div>
+        <div>
+            <span>菜单三号</span>
+            <a href="#">站长专区</a>
+            <a href="#">站长工具</a>
+            <a href="#">技术论坛</a>
+        </div>
+        <div>
+            <span>菜单四号</span>
+            <a href="#">您自定义</a>
+            <a href="#">您自定义</a>
+            <a href="#">您自定义</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    // <![CDATA[
+    var myMenu;
+    window.onload = function () {
+        myMenu = new SDMenu("my_menu");
+        myMenu.init();
+        var firstSubmenu = myMenu.submenus[0];
+        myMenu.expandMenu(firstSubmenu);
+    };
+    // ]]>
+</script>

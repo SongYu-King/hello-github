@@ -1,3 +1,14 @@
+##############
+## IDEA
+##############
+
+*.settings/
+*.project
+*.classpath
+*/target/
+*.iml
+*.idea
+
 #################
 ## Eclipse
 #################

@@ -1,0 +1,22 @@
+<config>
+
+	<cluster name="test">
+		<!-- 该集群中每个机器的默认配置 -->
+		<pool>
+			<!-- 池中最小空闲连接 -->
+			<minIdle>5</minIdle>
+			<!-- 池中最大的空闲连接 -->
+			<maxIdle>10</maxIdle>
+			<!-- 池中最大的活跃连接 -->
+			<maxActive>100</maxActive>
+			<!-- 获取连接的最大等待时间，单位：毫秒 -->
+			<maxWait>3000</maxWait>
+			<!-- 每个连接的超时时间，单位：毫秒 -->
+			<timeout>5000</timeout>
+		</pool>
+		<!-- 每个thrift服务器的基本信息 -->
+		<server name="adOptimizationServer-1" address="127.0.0.1" port="31860"></server>
+
+	</cluster>
+
+</config>

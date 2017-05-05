@@ -1,0 +1,64 @@
+@charset "utf-8";
+
+a {
+    color: orangered;
+    text-decoration: none;
+}
+
+div.sdmenu {
+    width: 140px;
+    font-size: 16px;
+    font-weight: normal;
+    font-family: Microsoft YaHei;
+    color: black;
+    background-color: white;
+}
+
+div.sdmenu div {
+    overflow: hidden;
+    border-bottom: 2px solid whitesmoke;
+}
+
+* html div.sdmenu div {
+    float: left
+}
+
+div.sdmenu div span {
+    display: block;
+    line-height: 32px;
+    width: 140px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-bottom: 2px solid whitesmoke;
+}
+
+div.sdmenu div.collapsed {
+    height: 32px;
+    width: 140px;
+}
+
+div.sdmenu div.collapsed span {
+    line-height: 32px
+}
+
+div.sdmenu div a {
+    padding-left: 24px;
+    display: block;
+    border-bottom: 1px dotted whitesmoke;
+    border-bottom-left-radius: 12px;
+    color: orangered;
+    background-color: white;
+    font-size: 14px;
+    font-weight: lighter;
+    line-height: 28px;
+    text-decoration: none;
+}
+
+div.sdmenu div a.current {
+    color: white;
+    background: orangered;
+}
+
+div.sdmenu div a:hover {
+    text-decoration: none;
+}

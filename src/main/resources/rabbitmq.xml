@@ -1,0 +1,20 @@
+<config>
+	<!-- 集群配置 -->
+	<cluster name="test_1">
+		<!-- 虚拟主机 -->
+		<vhost></vhost>
+		<!-- 集群中所有rabbitMQ的连接端口 -->
+		<port>5672</port>
+		<!-- 登录的用户名 -->
+		<username>testin</username>
+		<!-- 登录的密码 -->
+		<password>testin</password>
+		<!-- 连接超时，单位毫秒 -->
+		<timeout>1000</timeout>
+		<!-- 服务器列表 -->
+		<servers>
+			<address>192.168.5.103</address>
+		</servers>
+	</cluster>
+
+</config>

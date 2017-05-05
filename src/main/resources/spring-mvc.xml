@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       default-autowire="byName" default-lazy-init="false">
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <context:component-scan base-package="com,demo"/>
+
+    <context:property-placeholder location="classpath:quartz.properties" file-encoding="UTF-8" />
+
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="prettyPrint" value="true"/>
+                <!--<property name="objectMapper" ref="dateFriendlyObjectMapper"/>-->
+                <!-- 解决 HttpMediaTypeNotAcceptableException -->
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>*/*;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <mvc:default-servlet-handler/>
+
+    <mvc:resources location="/images/" mapping="/images/**" cache-period="864000"/>
+
+    <!--<bean id="urlMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>-->
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>-->
+    <!--<bean class="com.jd.stos.web.config.ApplicationSwaggerConfig"/>-->
+
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="/WEB-INF/vm/"/>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="velocimacro.library">macro.vm</prop>
+                <prop key="velocimacro.library.autoreload">false</prop>
+                <prop key="contentType">text/html;charset=UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+        <property name="order" value="0"/>
+
+        <property name="layoutUrl" value="home.vm"/>
+        <property name="layoutKey" value="layout"/>
+        <property name="screenContentKey" value="screen_content"/>
+
+        <property name="dateToolAttribute" value="dateTool"/>
+        <property name="numberToolAttribute" value="numberTool"/>
+        <property name="toolboxConfigLocation" value="/WEB-INF/tools.xml"/>
+
+        <property name="exposeSpringMacroHelpers" value="true"/>
+
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <!-- Solution Spring MVC “redirect:” prefix always (from https) redirects to http -->
+        <property name="redirectHttp10Compatible" value="false"/>
+
+        <!--/**-->
+        <!--* Enable or disable caching.-->
+        <!--* <p>This is equivalent to setting the {@link #setCacheLimit "cacheLimit"}-->
+        <!--* property to the default limit (1024) or to 0, respectively.-->
+        <!--* <p>Default is "true": caching is enabled.-->
+        <!--* Disable this only for debugging and development.-->
+        <!--*/-->
+        <property name="cache" value="false"/>
+    </bean>
+
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="defaultContentType" value="text/html;charset=UTF-8"/>
+        <property name="ignoreAcceptHeader" value="false"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="xml" value="application/xml"/>
+                <entry key="json" value="application/json"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+                <ref bean="viewResolver"/>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="java.lang.Exception">500</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+        <!--<property name="statusCodes">-->
+            <!--<props>-->
+                <!--<prop key="500">500</prop>-->
+                <!--<prop key="404">404</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+        <!--&lt;!&ndash; 设置日志输出级别，不定义则默认不输出警告等错误日志信息 &ndash;&gt;-->
+        <!--<property name="warnLogCategory" value="WARN"></property>-->
+        <!--&lt;!&ndash; 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 &ndash;&gt;-->
+        <!--<property name="defaultErrorView" value="404"></property>-->
+    <!--</bean>-->
+
+    <!--<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--<property name="defaultStatusCode" value="404"/>-->
+        <!--<property name="defaultErrorView" value="/error/40x" />-->
+        <!--<property name="exceptionAttribute" value="/error/50x" />-->
+        <!--<property name="statusCodes">-->
+            <!--<props>-->
+                <!--<prop key="/error-404">404</prop>-->
+                <!--<prop key="/error-500">500</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="java.lang.Exception">/error/50x</prop>-->
+                <!--<prop key="java.lang.Throwable">/error/50x</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="_weChatAppletInterceptor" class="com.jd.stos.web.interceptor.WeChatAppletInterceptor" />-->
+
+    <!--<bean id="_repeatSubmitInterceptor" class="com.jd.pop.md.man.web.interceptor.RepeatSubmitInterceptor" />-->
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/login/error"/>
+            <mvc:exclude-mapping path="/logout"/>
+            <mvc:exclude-mapping path="/weChatAppletController/**"/>
+            <mvc:exclude-mapping path="/weChatAppletHotelLocControl/**"/>
+            <mvc:exclude-mapping path="/weChatStoreUser/**"/>
+            <!--<ref bean="handlerMappingInterceptor"/>-->
+        </mvc:interceptor>
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/loc/**"/>-->
+            <!--<bean class="com.jd.stos.web.interceptor.MenuAccessControlInterceptor"/>-->
+        <!--</mvc:interceptor>-->
+    </mvc:interceptors>
+
+</beans>

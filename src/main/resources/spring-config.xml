@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:component-scan base-package="com,demo" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <context:property-placeholder file-encoding="utf-8" location="classpath:quartz.properties"/>
+
+    <bean id="storeLogoutKeys" name="storeLogoutKeys" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <value type="java.lang.String">${pop-vender.login.cookie.name}</value>
+                <value type="java.lang.String">${passport.checkLogin.cookieName}</value>
+                <value type="java.lang.String">ceshi3.com</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="180 seconds" debug="false">
+
+    <property name="appName" value="hello-github"/>
+    <contextName>${appName}</contextName>
+
+    <if condition='!isDefined("o2o.stores.log.path")'>
+        <then>
+            <property name="o2o.stores.log.path" value="/export/logs/hello.github.local"/>
+        </then>
+    </if>
+    <if condition='!isDefined("o2o.stores.log.level")'>
+        <then>
+            <property name="o2o.stores.log.level" value="INFO"/>
+        </then>
+    </if>
+    <if condition='!isDefined("console_log_level")'>
+        <then>
+            <property name="console_log_level" value="INFO"/>
+        </then>
+    </if>
+
+    <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/>
+
+    <!-- 输出到控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${console_log_level}</level>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出,%d:日期;%thread:线程名;%-5level：级别,从左显示5个字符宽度;%msg:日志消息;%n:换行符-->
+            <pattern>%date{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 异步写日志：异步输出，异步的log片段必须在同步段后面，否则不起作用 -->
+    <!--<appender name="queue" class="ch.qos.logback.classic.AsyncAppender">-->
+    <!--&lt;!&ndash; 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 &ndash;&gt;-->
+    <!--<discardingThreshold>0</discardingThreshold>-->
+    <!--&lt;!&ndash; 更改默认的队列的深度,该值会影响性能.默认值为256 &ndash;&gt;-->
+    <!--<queueSize>10</queueSize>-->
+    <!--&lt;!&ndash; 添加附加的appender,最多只能添加一个 &ndash;&gt;-->
+    <!--<appender-ref ref="console"/>-->
+    <!--</appender>-->
+
+
+    <!-- 记录所有的日志，保存10天数据，日志数据最大300M -->
+    <appender name="defaultLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${o2o.stores.log.path}/o2o-stores-default.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-default.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>300MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 记录DEBUG级别所有的日志，保存10天数据，日志数据最大100M -->
+    <appender name="defaultDebugLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${o2o.stores.log.path}/o2o-stores-default-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-default-debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 记录ERROR级别所有的日志，保存10天数据，日志数据最大100M -->
+    <appender name="defaultErrorLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${o2o.stores.log.path}/o2o-stores-default-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-default-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="defaultExceptionLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>EXCEPTION</marker>
+            </evaluator>
+            <level>ERROR</level>
+            <onMismatch>DENY</onMismatch>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <file>${o2o.stores.log.path}/o2o-stores-default-exception.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-default-exception.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="sqlLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${o2o.stores.log.path}/o2o-stores-sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-sql.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="jsfLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${o2o.stores.log.path}/o2o-stores-jsf.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-jsf.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="jmqLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${o2o.stores.log.path}/o2o-stores-jmq.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-jmq.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="velocityLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${o2o.stores.log.path}/o2o-stores-velocity.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${o2o.stores.log.path}/o2o-stores-velocity.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>30MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.jd.stos.dao" level="${o2o.stores.log.level}">
+        <appender-ref ref="sqlLogFile"/>
+    </logger>
+
+    <logger name="com.jd.stos.rpc" level="${o2o.stores.log.level}">
+        <appender-ref ref="jsfLogFile"/>
+    </logger>
+
+    <logger name="com.jd.stos.jmq" level="${o2o.stores.log.level}">
+        <appender-ref ref="jmqLogFile"/>
+    </logger>
+
+    <logger name="com.jd.stos.service" level="INFO">
+        <appender-ref ref="defaultLogFile"/>
+    </logger>
+
+    <logger name="com.jd.stos.web" level="${o2o.stores.log.level}">
+        <appender-ref ref="velocityLogFile"/>
+    </logger>
+
+    <!-- 在控制台显示 SQL 语句 -->
+    <logger name="com.ibatis,java.sql" level="DEBUG">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <root level="${o2o.stores.log.level}">
+        <appender-ref ref="console"/>
+        <!--<appender-ref ref="queue"/>-->
+
+        <appender-ref ref="defaultLogFile"/>
+        <appender-ref ref="defaultDebugLogFile"/>
+        <appender-ref ref="defaultErrorLogFile"/>
+        <!--<appender-ref ref="defaultExceptionLogFile"/>-->
+
+    </root>
+
+</configuration>
